@@ -8,8 +8,8 @@ An Amateur program used for estimating the loss due to the distortion by Faraday
 In EME communications, signal degradation often occurs due to polarization mismatch. 
 This tool helps operators estimate:
 
-	 - **Spatial Rotation**: Geometric polarization shift caused by the Earth's curvature between two distant stations.
-	 - **Faraday Rotation**: The rotation of the plane of polarization as the radio wave passes through the ionosphere, influenced by the Earth's magnetic field ($B$) and Total Electron Content (TEC).
+	 - Spatial Rotation: Geometric polarization shift caused by the Earth's curvature between two distant stations.
+	 - Faraday Rotation: The rotation of the plane of polarization as the radio wave passes through the ionosphere, influenced by the Earth's magnetic field ($B$) and Total Electron Content (TEC).
 
  ## Mathematical Modeling Description
 
@@ -105,7 +105,7 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
 
 - MSVC
 
-  ```
+  ```bash
   cl /std:c++20 /EHsc /Fe:FaradayRotation.exe `
      FaradayRotation.cpp `
      main_interactive.cpp
@@ -113,7 +113,7 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
 
 - GCC
 
-  ```
+  ```bash
   g++ -std=c++20 -O2 -o FaradayRotation \
       FaradayRotation.cpp \
       main_interactive.cpp
@@ -121,7 +121,7 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
 
 - Clang
 
-  ```
+  ```bash
   clang++ -std=c++20 -O2 -o FaradayRotation \
       FaradayRotation.cpp \
       main_interactive.cpp
@@ -129,21 +129,48 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
 
 ##  Example Calculation
 
-**Scenario**: EME contact between **Hefei, China (OM81ks)** and **Russia (KO93bs)** at 144 MHz.
+**Scenario**: EME between **BI6DX (OM81ks)** and **UA3PTW (KO93bs)** at 432 MHz.
 
-| **Parameter**      | **DX Station (OM81ks)** | **Home Station (KO93bs)** |
-| ------------------ | ----------------------- | ------------------------- |
-| **Coordinates**    | 31.79°N, 116.87°E       | 53.77°N, 38.13°E          |
-| **Antenna $\psi$** | 90° (Vertical)          | 0° (Horizontal)           |
-| **Moon Elevation** | ~27°                    | ~27°                      |
+| **Parameter**      | **BI6DX (OM81ks)** | **UA3PTW (KO93bs)** |
+| ------------------ | ------------------ | ------------------- |
+| **Coordinates**    | 31.79°N, 116.87°E  | 53.77°N, 38.13°E    |
+| **Antenna $\psi$** | 90° (Vertical)     | 0° (Horizontal)     |
+| **Moon Elevation** | ~27°               | ~27°                |
 
 **Results**:
 
-- **Spatial Rotation**: ~45°
-- **Polarization Loss**: **-2.986 dB**
-- **Efficiency**: **50.3%**
+```bash
+===========================================================================
+  Calculation Results
+===========================================================================
 
-> **Insight**: Even with cross-polarized antennas (Vertical vs. Horizontal), the **Spatial Rotation** caused by the Earth's geometry partially compensates for the mismatch, enabling a viable link.
+--- Station Information ---
+DX Grid: KO93bs
+Home Grid: OM81ks
+Ground Distance: 6503.0 km
+Frequency: 432.1 MHz (70cm band)
+
+--- Rotation Components ---
+Spatial Rotation: -42.766 deg
+DX Faraday Rotation: 0.000 deg
+Home Faraday Rotation: 0.003 deg
+Total Rotation: -42.763 deg
+
+--- Link Parameters ---
+Path Length: 754840.0 km
+Propagation Delay: 2517.875 ms
+
+--- POLARIZATION LOSS ---
+PLF (Polarization Loss Factor): 0.460999
+Loss: -3.363 dB
+Efficiency: 46.10 %
+
+--- Interpretation ---
+Fair: Moderate loss, may affect weak signal work.
+===========================================================================
+```
+
+
 
 
 
