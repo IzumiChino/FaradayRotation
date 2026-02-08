@@ -7,7 +7,7 @@
 // ========== System Constants ==========
 namespace SystemConstants {
     constexpr double PI = 3.14159265358979323846;
-    constexpr double FARADAY_CONSTANT = 2.36e4;
+    constexpr double FARADAY_CONSTANT = 0.23647;
     constexpr double EARTH_RADIUS_KM = 6371.0;
     constexpr double IONOSPHERE_HEIGHT_KM = 350.0;
     constexpr double SPEED_OF_LIGHT = 299792458.0;
@@ -29,6 +29,7 @@ struct SiteParameters {
 };
 
 // ========== Ionosphere Data ==========
+// TODO: Read Ionosphere data from external sources (e.g., IRI model, real-time TEC maps) and populate this structure accordingly. For now, we will use placeholder values for testing and validation purposes.
 struct IonosphereData {
     double vTEC_DX;
     double vTEC_Home;

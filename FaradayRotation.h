@@ -34,7 +34,7 @@ public:
     double calculateParallacticAngle(
         double latitude, double declination, double hourAngle) const;
     double calculateFaradayRotation(
-        double vTEC, double B_magnitude, double B_inclination,
+        double vTEC, double B_magnitude, double B_inclination, double B_declination,
         double elevation, double azimuth) const;
     double calculateSlantFactor(double elevation) const;
     double calculateMagneticAngle(

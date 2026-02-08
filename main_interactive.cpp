@@ -1,6 +1,8 @@
 #include "FaradayRotation.h"
 #include "Parameters.h"
 #include "MaidenheadGrid.h"
+#include "IonosphereDataProvider.h"
+#include "MoonCalendarReader.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -93,13 +95,101 @@ int main() {
 
     // ========== Input: Ionosphere Parameters ==========
     std::cout << "\n--- Ionosphere Parameters ---" << std::endl;
-    std::cout << "Use default ionosphere values? (y/n): ";
-    char use_default;
-    std::cin >> use_default;
+    std::cout << "Data source options:\n";
+    std::cout << "  1. Load from IONEX file (data.txt)\n";
+    std::cout << "  2. Use default values (vTEC=25 TECU, B=50uT, inclination=60deg)\n";
+    std::cout << "  3. Manual input\n";
+    std::cout << "Select option (1/2/3): ";
+
+    int iono_option;
+    std::cin >> iono_option;
     clearInputBuffer();
 
     IonosphereData iono;
-    if (use_default == 'y' || use_default == 'Y') {
+    std::tm obs_time = {};
+
+    if (iono_option == 1) {
+        IonosphereDataProvider provider;
+        std::cout << "Loading IONEX file (data.txt)..." << std::endl;
+
+        if (!provider.loadIonexFile("data.txt")) {
+            std::cerr << "Error: Could not load data.txt" << std::endl;
+            std::cerr << "Falling back to default values." << std::endl;
+            iono.vTEC_DX = 25.0;
+            iono.vTEC_Home = 25.0;
+            iono.B_magnitude_DX = 5.0e-5;
+            iono.B_magnitude_Home = 5.0e-5;
+            iono.B_inclination_DX = ParameterUtils::deg2rad(60.0);
+            iono.B_inclination_Home = ParameterUtils::deg2rad(60.0);
+        } else {
+            std::cout << "IONEX file loaded successfully!" << std::endl;
+
+            std::cout << "Loading WMM model (WMMHR.COF)..." << std::endl;
+            if (!provider.loadWMMFile("WMMHR.COF")) {
+                std::cout << "Warning: Could not load WMM file. Using default magnetic field values." << std::endl;
+            } else {
+                std::cout << "WMM model loaded successfully!" << std::endl;
+            }
+
+            std::cout << "\nEnter observation date and time (UTC):" << std::endl;
+            std::cout << "Year (e.g., 2026): ";
+            int year;
+            std::cin >> year;
+            obs_time.tm_year = year - 1900;
+            clearInputBuffer();
+
+            std::cout << "Month (1-12): ";
+            int month;
+            std::cin >> month;
+            obs_time.tm_mon = month - 1;
+            clearInputBuffer();
+
+            std::cout << "Day (1-31): ";
+            std::cin >> obs_time.tm_mday;
+            clearInputBuffer();
+
+            std::cout << "Hour (0-23): ";
+            std::cin >> obs_time.tm_hour;
+            clearInputBuffer();
+
+            std::cout << "Minute (0-59): ";
+            std::cin >> obs_time.tm_min;
+            clearInputBuffer();
+
+            obs_time.tm_sec = 0;
+            obs_time.tm_isdst = -1;
+
+            double lat_dx = ParameterUtils::rad2deg(calculator.getDXStation().latitude);
+            double lon_dx = ParameterUtils::rad2deg(calculator.getDXStation().longitude);
+            double lat_home = ParameterUtils::rad2deg(calculator.getHomeStation().latitude);
+            double lon_home = ParameterUtils::rad2deg(calculator.getHomeStation().longitude);
+
+            double height_dx_km = 0.0;
+            double height_home_km = 0.0;
+
+            if (provider.getIonosphereData(obs_time, lat_dx, lon_dx, height_dx_km,
+                                          lat_home, lon_home, height_home_km, iono)) {
+                std::cout << "\nIonosphere data retrieved:" << std::endl;
+                std::cout << "  DX vTEC: " << iono.vTEC_DX << " TECU" << std::endl;
+                std::cout << "  Home vTEC: " << iono.vTEC_Home << " TECU" << std::endl;
+                if (provider.isWMMLoaded()) {
+                    std::cout << "  DX Magnetic Field: " << iono.B_magnitude_DX * 1e9 << " nT" << std::endl;
+                    std::cout << "  DX Inclination: " << ParameterUtils::rad2deg(iono.B_inclination_DX) << " deg" << std::endl;
+                    std::cout << "  Home Magnetic Field: " << iono.B_magnitude_Home * 1e9 << " nT" << std::endl;
+                    std::cout << "  Home Inclination: " << ParameterUtils::rad2deg(iono.B_inclination_Home) << " deg" << std::endl;
+                }
+            } else {
+                std::cerr << "Error: Could not retrieve TEC data for specified time/location" << std::endl;
+                std::cerr << "Falling back to default values." << std::endl;
+                iono.vTEC_DX = 25.0;
+                iono.vTEC_Home = 25.0;
+                iono.B_magnitude_DX = 5.0e-5;
+                iono.B_magnitude_Home = 5.0e-5;
+                iono.B_inclination_DX = ParameterUtils::deg2rad(60.0);
+                iono.B_inclination_Home = ParameterUtils::deg2rad(60.0);
+            }
+        }
+    } else if (iono_option == 2) {
         iono.vTEC_DX = 25.0;
         iono.vTEC_Home = 25.0;
         iono.B_magnitude_DX = 5.0e-5;
@@ -177,11 +267,42 @@ int main() {
         moon.elevation_Home = ParameterUtils::deg2rad(elev_home);
         moon.azimuth_Home = ParameterUtils::deg2rad(az_home);
 
-        // Still need declination for parallactic angle calculation
-        std::cout << "Enter moon declination (degrees, typical: -28 to +28): ";
-        double moon_dec;
-        std::cin >> moon_dec;
+        std::cout << "\nMoon declination options:\n";
+        std::cout << "  1. Load from calendar.dat (automatic)\n";
+        std::cout << "  2. Manual input\n";
+        std::cout << "Select option (1/2): ";
+        int decl_option;
+        std::cin >> decl_option;
         clearInputBuffer();
+
+        double moon_dec = 0.0;
+
+        if (decl_option == 1) {
+            MoonCalendarReader calendar;
+            if (calendar.loadCalendarFile("calendar.dat")) {
+                std::tm date_only = obs_time;
+                date_only.tm_hour = 0;
+                date_only.tm_min = 0;
+                date_only.tm_sec = 0;
+
+                if (calendar.getMoonDeclination(date_only, moon_dec)) {
+                    std::cout << "Moon declination from calendar: " << moon_dec << " deg" << std::endl;
+                } else {
+                    std::cout << "Could not find declination in calendar. Please enter manually: ";
+                    std::cin >> moon_dec;
+                    clearInputBuffer();
+                }
+            } else {
+                std::cout << "Error: Could not load calendar.dat. Please enter manually: ";
+                std::cin >> moon_dec;
+                clearInputBuffer();
+            }
+        } else {
+            std::cout << "Enter moon declination (degrees, typical: -28 to +28): ";
+            std::cin >> moon_dec;
+            clearInputBuffer();
+        }
+
         moon.declination = ParameterUtils::deg2rad(moon_dec);
 
         // Calculate hour angle from elevation (approximate)

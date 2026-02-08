@@ -225,7 +225,7 @@ double FaradayRotation::calculateMagneticAngle(
 
     double B_x = std::cos(B_inclination) * std::cos(B_declination);
     double B_y = std::cos(B_inclination) * std::sin(B_declination);
-    double B_z = std::sin(B_inclination);
+    double B_z = -std::sin(B_inclination);
 
     double dotProduct = prop_x * B_x + prop_y * B_y + prop_z * B_z;
 
@@ -235,16 +235,20 @@ double FaradayRotation::calculateMagneticAngle(
 // ========== Faraday Rotation Calculation ==========
 
 double FaradayRotation::calculateFaradayRotation(
-    double vTEC, double B_magnitude, double B_inclination,
+    double vTEC, double B_magnitude, double B_inclination, double B_declination,
     double elevation, double azimuth) const {
 
-    double f_squared = m_config.frequency_MHz * m_config.frequency_MHz;
+    double f_MHz = m_config.frequency_MHz;
+    double f_squared_MHz = f_MHz * f_MHz;
     double slantFactor = calculateSlantFactor(elevation);
-    double theta_B = calculateMagneticAngle(B_inclination, 0.0, elevation, azimuth);
 
-    double omega = (SystemConstants::FARADAY_CONSTANT / f_squared)
+    double theta_B = calculateMagneticAngle(B_inclination, B_declination, elevation, azimuth);
+
+    double B_nT = B_magnitude * 1e9;
+
+    double omega = (SystemConstants::FARADAY_CONSTANT / f_squared_MHz)
                    * vTEC
-                   * B_magnitude
+                   * B_nT
                    * std::cos(theta_B)
                    * slantFactor;
 
@@ -371,6 +375,7 @@ CalculationResults FaradayRotation::calculate() {
                 m_ionoData.vTEC_DX,
                 m_ionoData.B_magnitude_DX,
                 m_ionoData.B_inclination_DX,
+                m_ionoData.B_declination_DX,
                 m_moonEphem.elevation_DX,
                 m_moonEphem.azimuth_DX
             );
@@ -379,6 +384,7 @@ CalculationResults FaradayRotation::calculate() {
                 m_ionoData.vTEC_Home,
                 m_ionoData.B_magnitude_Home,
                 m_ionoData.B_inclination_Home,
+                m_ionoData.B_declination_Home,
                 m_moonEphem.elevation_Home,
                 m_moonEphem.azimuth_Home
             );
