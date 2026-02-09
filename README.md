@@ -1,7 +1,7 @@
 # Faraday Rotation Estimation
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An Amateur program used for estimating the loss due to the distortion by Faraday Rotation between to EME stations (DX and Home location)
+An Amateur program used for estimating the loss due to the polarization distortion by Faraday Rotation between to EME stations (DX and Home location)
 
 ## Overview
 
@@ -109,6 +109,10 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
   cl /std:c++20 /EHsc /Fe:FaradayRotation.exe `
      FaradayRotation.cpp `
      main_interactive.cpp
+     MoonCalendarReader.cpp
+     IonexReader.cpp
+     InosphereDataProvider.cpp
+     WMMModel.cpp
   ```
 
 - GCC
@@ -116,7 +120,11 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
   ```bash
   g++ -std=c++20 -O2 -o FaradayRotation \
       FaradayRotation.cpp \
-      main_interactive.cpp
+      main_interactive.cpp \
+      MoonCalendarReader.cpp \
+      IonexReader.cpp \
+      InosphereDataProvider.cpp \
+      WMMModel.cpp
   ```
 
 - Clang
@@ -124,8 +132,30 @@ This yields the **Final Polarization Transformation Matrix** that describes the 
   ```bash
   clang++ -std=c++20 -O2 -o FaradayRotation \
       FaradayRotation.cpp \
-      main_interactive.cpp
+      main_interactive.cpp \
+      MoonCalendarReader.cpp \
+      IonexReader.cpp \
+      InosphereDataProvider.cpp \
+      WMMModel.cpp
   ```
+
+## Data Source
+
+In the latest version, we introduced three key files for accurate calculation: TEC Data ``` data.txt``` , Moon Calendar ```calendar.dat``` and WMM Coefficient File ```WMMHR.COF```
+
+For latest data, you can download from websites below:
+
+TEC Data(Sign in needed): https://cddis.nasa.gov/archive/gnss/products/ionosphere/2026/
+
+WMM model(Short survey on data usage needed): https://www.ncei.noaa.gov/magnetic-model-hr-survey-page
+
+Moon Calendar: https://eme.radio/dl7apv-eme-calendar-2026
+
+TEC data is compressed in ```.Z``` file and you may need to decompress and rename the file to ```data.txt```
+
+Moon Calendar raw data is presented in ```HTML Sheets```, you may need to convert it to ```.dat``` file, the convert tool will be published in few days as ```convert_calendar.exe```. The calendar contained in the repo could be used up to Dec. 2026.
+
+WMM model is available for 2025-2029, you needn't to upgrade it.
 
 ##  Example Calculation
 
@@ -151,22 +181,22 @@ Ground Distance: 6503.0 km
 Frequency: 432.1 MHz (70cm band)
 
 --- Rotation Components ---
-Spatial Rotation: -42.766 deg
-DX Faraday Rotation: 0.000 deg
-Home Faraday Rotation: 0.003 deg
-Total Rotation: -42.763 deg
+Spatial Rotation: -44.015 deg
+DX Faraday Rotation: -24.205 deg
+Home Faraday Rotation: -76.727 deg
+Total Rotation: -144.947 deg
 
 --- Link Parameters ---
-Path Length: 754840.0 km
-Propagation Delay: 2517.875 ms
+Path Length: 802796.0 km
+Propagation Delay: 2677.839 ms
 
 --- POLARIZATION LOSS ---
-PLF (Polarization Loss Factor): 0.460999
-Loss: -3.363 dB
-Efficiency: 46.10 %
+PLF (Polarization Loss Factor): 0.824294
+Loss: -0.839 dB
+Efficiency: 82.43 %
 
 --- Interpretation ---
-Fair: Moderate loss, may affect weak signal work.
+Excellent: Minimal polarization loss.
 ===========================================================================
 ```
 
