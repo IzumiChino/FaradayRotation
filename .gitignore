@@ -25,3 +25,6 @@ ARM64/
 /main.cpp
 /test_calendar.exe
 /CALENDAR_USAGE.md
+/test_calendar.cpp
+/test_ionex.cpp
+/test_wmm.cpp
