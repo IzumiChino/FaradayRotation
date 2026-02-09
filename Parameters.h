@@ -29,7 +29,6 @@ struct SiteParameters {
 };
 
 // ========== Ionosphere Data ==========
-// TODO: Read Ionosphere data from external sources (e.g., IRI model, real-time TEC maps) and populate this structure accordingly. For now, we will use placeholder values for testing and validation purposes.
 struct IonosphereData {
     double vTEC_DX;
     double vTEC_Home;
