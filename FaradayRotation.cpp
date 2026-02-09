@@ -200,17 +200,8 @@ double FaradayRotation::calculateSlantFactor(double elevation) const {
         return 1.0;
     }
 
-    double R_E = SystemConstants::EARTH_RADIUS_KM;
-    double H_ion = SystemConstants::IONOSPHERE_HEIGHT_KM;
-
-    double cosElevation = std::cos(elevation);
-    double ratio = (R_E / (R_E + H_ion)) * cosElevation;
-
-    if (ratio >= 1.0) {
-        return 1.0;
-    }
-
-    return 1.0 / std::sqrt(1.0 - ratio * ratio);
+    double hmF2 = SystemConstants::IONOSPHERE_HEIGHT_KM;
+    return IonospherePhysics::calculateMappingFunction(elevation, hmF2);
 }
 
 // ========== Magnetic Angle Calculation ==========
@@ -239,18 +230,15 @@ double FaradayRotation::calculateFaradayRotation(
     double elevation, double azimuth) const {
 
     double f_MHz = m_config.frequency_MHz;
-    double f_squared_MHz = f_MHz * f_MHz;
-    double slantFactor = calculateSlantFactor(elevation);
 
-    double theta_B = calculateMagneticAngle(B_inclination, B_declination, elevation, azimuth);
+    double hmF2 = SystemConstants::IONOSPHERE_HEIGHT_KM;
 
-    double B_nT = B_magnitude * 1e9;
-
-    double omega = (SystemConstants::FARADAY_CONSTANT / f_squared_MHz)
-                   * vTEC
-                   * B_nT
-                   * std::cos(theta_B)
-                   * slantFactor;
+    double omega = IonospherePhysics::calculateFaradayRotationPrecise(
+        vTEC, hmF2,
+        B_magnitude, B_inclination, B_declination,
+        elevation, azimuth,
+        f_MHz
+    );
 
     return omega;
 }
@@ -371,22 +359,26 @@ CalculationResults FaradayRotation::calculate() {
         double faradayRotation_Home = 0.0;
 
         if (m_config.includeFaradayRotation) {
-            faradayRotation_DX = calculateFaradayRotation(
+            faradayRotation_DX = IonospherePhysics::calculateFaradayRotationPrecise(
                 m_ionoData.vTEC_DX,
+                m_ionoData.hmF2_DX,
                 m_ionoData.B_magnitude_DX,
                 m_ionoData.B_inclination_DX,
                 m_ionoData.B_declination_DX,
                 m_moonEphem.elevation_DX,
-                m_moonEphem.azimuth_DX
+                m_moonEphem.azimuth_DX,
+                m_config.frequency_MHz
             );
 
-            faradayRotation_Home = calculateFaradayRotation(
+            faradayRotation_Home = IonospherePhysics::calculateFaradayRotationPrecise(
                 m_ionoData.vTEC_Home,
+                m_ionoData.hmF2_Home,
                 m_ionoData.B_magnitude_Home,
                 m_ionoData.B_inclination_Home,
                 m_ionoData.B_declination_Home,
                 m_moonEphem.elevation_Home,
-                m_moonEphem.azimuth_Home
+                m_moonEphem.azimuth_Home,
+                m_config.frequency_MHz
             );
         }
 

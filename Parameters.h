@@ -32,6 +32,8 @@ struct SiteParameters {
 struct IonosphereData {
     double vTEC_DX;
     double vTEC_Home;
+    double hmF2_DX;
+    double hmF2_Home;
     double B_magnitude_DX;
     double B_magnitude_Home;
     double B_inclination_DX;
@@ -43,6 +45,7 @@ struct IonosphereData {
 
     IonosphereData()
         : vTEC_DX(20.0), vTEC_Home(20.0),
+          hmF2_DX(350.0), hmF2_Home(350.0),
           B_magnitude_DX(5e-5), B_magnitude_Home(5e-5),
           B_inclination_DX(0.0), B_inclination_Home(0.0),
           B_declination_DX(0.0), B_declination_Home(0.0),

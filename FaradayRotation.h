@@ -2,6 +2,7 @@
 
 #include "Parameters.h"
 #include "MaidenheadGrid.h"
+#include "IonospherePhysics.h"
 #include <complex>
 #include <array>
 #include <memory>

@@ -126,12 +126,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  
   <ItemGroup>
     <ClCompile Include="IonexReader.cpp" />
     <ClCompile Include="IonosphereDataProvider.cpp" />
-    <ClCompile Include="main_interactive.cpp" />
+    <ClCompile Include="IonospherePhysics.cpp" />
+    <ClCompile Include="main_interactive.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="MoonCalendarReader.cpp" />
+    <ClCompile Include="NOAAGlotecReader.cpp" />
+    <ClCompile Include="SimpleHttpClient.cpp" />
     <ClCompile Include="FaradayRotation.cpp" />
     <ClCompile Include="WMMModel.cpp" />
     <ClCompile Include="main.cpp">
@@ -146,18 +150,23 @@
     <ClCompile Include="test_wmm.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="test_glotec.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
-  
   <ItemGroup>
     <ClInclude Include="FaradayRotation.h" />
     <ClInclude Include="IonexReader.h" />
     <ClInclude Include="IonosphereDataProvider.h" />
+    <ClInclude Include="IonospherePhysics.h" />
     <ClInclude Include="MoonCalendarReader.h" />
+    <ClInclude Include="NOAAGlotecReader.h" />
+    <ClInclude Include="SimpleHttpClient.h" />
     <ClInclude Include="Parameters.h" />
     <ClInclude Include="MaidenheadGrid.h" />
     <ClInclude Include="WMMModel.h" />
   </ItemGroup>
-  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

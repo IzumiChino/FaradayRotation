@@ -117,6 +117,8 @@ int main() {
             std::cerr << "Falling back to default values." << std::endl;
             iono.vTEC_DX = 25.0;
             iono.vTEC_Home = 25.0;
+            iono.hmF2_DX = 350.0;
+            iono.hmF2_Home = 350.0;
             iono.B_magnitude_DX = 5.0e-5;
             iono.B_magnitude_Home = 5.0e-5;
             iono.B_inclination_DX = ParameterUtils::deg2rad(60.0);
@@ -175,14 +177,18 @@ int main() {
                 if (provider.isWMMLoaded()) {
                     std::cout << "  DX Magnetic Field: " << iono.B_magnitude_DX * 1e9 << " nT" << std::endl;
                     std::cout << "  DX Inclination: " << ParameterUtils::rad2deg(iono.B_inclination_DX) << " deg" << std::endl;
+                    std::cout << "  DX Declination: " << ParameterUtils::rad2deg(iono.B_declination_DX) << " deg" << std::endl;
                     std::cout << "  Home Magnetic Field: " << iono.B_magnitude_Home * 1e9 << " nT" << std::endl;
                     std::cout << "  Home Inclination: " << ParameterUtils::rad2deg(iono.B_inclination_Home) << " deg" << std::endl;
+                    std::cout << "  Home Declination: " << ParameterUtils::rad2deg(iono.B_declination_Home) << " deg" << std::endl;
                 }
             } else {
                 std::cerr << "Error: Could not retrieve TEC data for specified time/location" << std::endl;
                 std::cerr << "Falling back to default values." << std::endl;
                 iono.vTEC_DX = 25.0;
                 iono.vTEC_Home = 25.0;
+                iono.hmF2_DX = 350.0;
+                iono.hmF2_Home = 350.0;
                 iono.B_magnitude_DX = 5.0e-5;
                 iono.B_magnitude_Home = 5.0e-5;
                 iono.B_inclination_DX = ParameterUtils::deg2rad(60.0);
@@ -192,11 +198,13 @@ int main() {
     } else if (iono_option == 2) {
         iono.vTEC_DX = 25.0;
         iono.vTEC_Home = 25.0;
+        iono.hmF2_DX = 350.0;
+        iono.hmF2_Home = 350.0;
         iono.B_magnitude_DX = 5.0e-5;
         iono.B_magnitude_Home = 5.0e-5;
         iono.B_inclination_DX = ParameterUtils::deg2rad(60.0);
         iono.B_inclination_Home = ParameterUtils::deg2rad(60.0);
-        std::cout << "Using default values (vTEC=25 TECU, B=50uT, inclination=60deg)" << std::endl;
+        std::cout << "Using default values (vTEC=25 TECU, hmF2=350km, B=50uT, inclination=60deg)" << std::endl;
     } else {
         std::cout << "Enter DX station vTEC (TECU, typical: 10-50): ";
         std::cin >> iono.vTEC_DX;
@@ -204,6 +212,14 @@ int main() {
 
         std::cout << "Enter Home station vTEC (TECU, typical: 10-50): ";
         std::cin >> iono.vTEC_Home;
+        clearInputBuffer();
+
+        std::cout << "Enter DX station hmF2 peak height (km, typical: 250-400): ";
+        std::cin >> iono.hmF2_DX;
+        clearInputBuffer();
+
+        std::cout << "Enter Home station hmF2 peak height (km, typical: 250-400): ";
+        std::cin >> iono.hmF2_Home;
         clearInputBuffer();
 
         std::cout << "Enter DX magnetic field strength (uT, typical: 30-60): ";
@@ -393,6 +409,15 @@ int main() {
     std::cout << "DX Faraday Rotation: " << results.faradayRotation_DX_deg << " deg" << std::endl;
     std::cout << "Home Faraday Rotation: " << results.faradayRotation_Home_deg << " deg" << std::endl;
     std::cout << "Total Rotation: " << results.totalRotation_deg << " deg" << std::endl;
+
+    std::cout << "\n--- Ionosphere Parameters (Precise Model) ---" << std::endl;
+    const IonosphereData& iono_data = calculator.getIonosphereData();
+    std::cout << "DX vTEC: " << std::setprecision(2) << iono_data.vTEC_DX << " TECU" << std::endl;
+    std::cout << "DX hmF2: " << iono_data.hmF2_DX << " km" << std::endl;
+    std::cout << "DX Mapping Factor: " << std::setprecision(4) << results.slantFactor_DX << std::endl;
+    std::cout << "Home vTEC: " << std::setprecision(2) << iono_data.vTEC_Home << " TECU" << std::endl;
+    std::cout << "Home hmF2: " << iono_data.hmF2_Home << " km" << std::endl;
+    std::cout << "Home Mapping Factor: " << std::setprecision(4) << results.slantFactor_Home << std::endl;
 
     std::cout << "\n--- Link Parameters ---" << std::endl;
     std::cout << "Path Length: " << std::setprecision(1)
