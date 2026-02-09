@@ -7,11 +7,9 @@ on:
     branches: [ "main" ]
 
 env:
-  # 明确指向你的 .sln 文件名
-  SOLUTION_FILE_PATH: FaradayRotation.sln 
+  PROJECT_FILE_PATH: FaradayRotation.vcxproj
   BUILD_CONFIGURATION: Release
-  # 明确指定 x64，匹配你的 Windows 11 Canary 环境
-  BUILD_PLATFORM: x64 
+  BUILD_PLATFORM: x64
 
 permissions:
   contents: read
@@ -21,27 +19,24 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
 
     - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      run: nuget restore ${{env.PROJECT_FILE_PATH}} -Verbosity quiet || echo "No NuGet packages to restore"
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        msbuild /m `
-          /p:Configuration=${{env.BUILD_CONFIGURATION}} `
-          /p:Platform=${{env.BUILD_PLATFORM}} `
-          ${{env.SOLUTION_FILE_PATH}}
+        msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} ${{env.PROJECT_FILE_PATH}}
 
     - name: Upload Artifacts
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: FaradayRotation-Binary
         path: |
           x64/${{env.BUILD_CONFIGURATION}}/*.exe
-          x64/${{env.BUILD_CONFIGURATION}}/*.dll
