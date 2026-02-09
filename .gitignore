@@ -29,3 +29,8 @@ ARM64/
 /test_ionex.cpp
 /test_wmm.cpp
 /test_grid.cpp
+/test_glotec.cpp
+/test_ionosphere_physics.cpp
+/test_ionosphere_physics.exe
+/test_user_case.cpp
+/test_user_case.exe
