@@ -171,6 +171,70 @@ WMM model is available for 2025-2029, you needn't to upgrade it.
 
 ```bash
 ===========================================================================
+  EME Faraday Rotation Calculator - Interactive Mode
+===========================================================================
+
+This program calculates polarization loss due to Faraday rotation
+in Earth-Moon-Earth (EME) communications.
+
+Enter operating frequency (MHz): 432.065
+
+--- DX Station Configuration ---
+Enter DX station grid locator (e.g., FN20xa): KO93bs
+Enter DX antenna orientation angle psi (degrees, 0=horizontal): 0
+Enter DX antenna ellipticity chi (degrees, 0=linear, 45=RHCP, -45=LHCP): 0
+
+--- Home Station Configuration ---
+Enter Home station grid locator (e.g., PM95vr): OM81ks
+Enter Home antenna orientation angle psi (degrees, 0=horizontal): 90
+Enter Home antenna ellipticity chi (degrees, 0=linear, 45=RHCP, -45=LHCP): 0
+
+--- Ionosphere Parameters ---
+Data source options:
+  1. Load from IONEX file (data.txt)
+  2. Use default values (vTEC=25 TECU, B=50uT, inclination=60deg)
+  3. Manual input
+Select option (1/2/3): 1
+Loading IONEX file (data.txt)...
+IONEX file loaded successfully!
+Loading WMM model (WMMHR.COF)...
+WMM model loaded successfully!
+
+Enter observation date and time (UTC):
+Year (e.g., 2026): 2026
+Month (1-12): 2
+Day (1-31): 9
+Hour (0-23): 0
+Minute (0-59): 37
+
+Ionosphere data retrieved:
+  DX vTEC: 4.428 TECU
+  Home vTEC: 25.286 TECU
+  DX Magnetic Field: 52874.339 nT
+  DX Inclination: 70.817 deg
+  Home Magnetic Field: 50616.592 nT
+  Home Inclination: 49.309 deg
+
+--- Moon Ephemeris ---
+Do you have moon elevation/azimuth data? (y/n): y
+Enter DX station moon elevation (degrees above horizon): 9.6
+Enter DX station moon azimuth (degrees, 0=North, 90=East): 147.6
+Enter Home station moon elevation (degrees above horizon): 22.4
+Enter Home station moon azimuth (degrees, 0=North, 90=East): 224.9
+
+Moon declination options:
+  1. Load from calendar.dat (automatic)
+  2. Manual input
+Select option (1/2): 1
+Moon declination from calendar: -19.592 deg
+Enter Earth-Moon distance (km, typical: 356500-406700, default=384400): 403500
+
+Calculating...
+
+Debug - Calculated Moon Elevations:
+  DX Elevation: 9.600 deg
+  Home Elevation: 22.400 deg
+===========================================================================
   Calculation Results
 ===========================================================================
 
@@ -181,22 +245,30 @@ Ground Distance: 6503.0 km
 Frequency: 432.1 MHz (70cm band)
 
 --- Rotation Components ---
-Spatial Rotation: -44.015 deg
-DX Faraday Rotation: -24.205 deg
-Home Faraday Rotation: -76.727 deg
-Total Rotation: -144.947 deg
+Spatial Rotation: -19.523 deg
+DX Faraday Rotation: -18.656 deg
+Home Faraday Rotation: -129.115 deg
+Total Rotation: -167.294 deg
+
+--- Ionosphere Parameters (Precise Model) ---
+DX vTEC: 4.43 TECU
+DX hmF2: 350.00 km
+DX Mapping Factor: 2.8124
+Home vTEC: 25.29 TECU
+Home hmF2: 350.00 km
+Home Mapping Factor: 2.0765
 
 --- Link Parameters ---
-Path Length: 802796.0 km
-Propagation Delay: 2677.839 ms
+Path Length: 807000.0 km
+Propagation Delay: 2691.862 ms
 
 --- POLARIZATION LOSS ---
-PLF (Polarization Loss Factor): 0.824294
-Loss: -0.839 dB
-Efficiency: 82.43 %
+PLF (Polarization Loss Factor): 0.012622
+Loss: -18.989 dB
+Efficiency: 1.26 %
 
 --- Interpretation ---
-Excellent: Minimal polarization loss.
+Poor: Significant loss. Consider using circular polarization.
 ===========================================================================
 ```
 
