@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="FaradayRotation.vcxproj" Id="c219e182-439a-4fb1-9c57-951554402ee1" />
+</Solution>

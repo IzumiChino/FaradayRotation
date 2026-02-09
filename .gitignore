@@ -21,9 +21,6 @@ ARM64/
 *.recipe
 *.bak
 /examples.cpp
-/FaradayRotation.slnx
-/FaradayRotation.vcxproj
-/FaradayRotation.vcxproj.filters
 /Faraday_Rotation_Model.md
 /main.cpp
 /test_calendar.exe
