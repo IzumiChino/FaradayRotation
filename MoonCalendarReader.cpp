@@ -129,6 +129,8 @@ double MoonCalendarReader::linearInterpolate(double x, double x1, double y1, dou
     return y1 + (y2 - y1) * (x - x1) / (x2 - x1);
 }
 
+// ========== Lagrange Interpolation ==========
+
 double MoonCalendarReader::lagrangeInterpolate(double x, const std::vector<double>& xPoints, const std::vector<double>& yPoints) const {
     if (xPoints.size() != yPoints.size() || xPoints.empty()) {
         return 0.0;

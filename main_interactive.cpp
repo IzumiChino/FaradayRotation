@@ -158,6 +158,9 @@ int main() {
             std::cin >> obs_time.tm_min;
             clearInputBuffer();
 
+            if (obs_time.tm_mday == 14 && month == 1)
+				std::cout << "Happy Birthday Mutsumi Wakaba!" << std::endl;
+
             obs_time.tm_sec = 0;
             obs_time.tm_isdst = -1;
 
@@ -349,12 +352,43 @@ int main() {
         }
 
     } else {
-        std::cout << "Enter moon declination (degrees, typical: -28 to +28): ";
-        double moon_dec;
-        std::cin >> moon_dec;
+        std::cout << "\nMoon declination options:\n";
+        std::cout << "  1. Load from calendar.dat (automatic)\n";
+        std::cout << "  2. Manual input\n";
+        std::cout << "Select option (1/2): ";
+        int decl_option;
+        std::cin >> decl_option;
         clearInputBuffer();
 
-        std::cout << "Enter DX station hour angle (degrees, 0=transit): ";
+        double moon_dec = 0.0;
+
+        if (decl_option == 1) {
+            MoonCalendarReader calendar;
+            if (calendar.loadCalendarFile("calendar.dat")) {
+                std::tm date_only = obs_time;
+                date_only.tm_hour = 0;
+                date_only.tm_min = 0;
+                date_only.tm_sec = 0;
+
+                if (calendar.getMoonDeclination(date_only, moon_dec)) {
+                    std::cout << "Moon declination from calendar: " << moon_dec << " deg" << std::endl;
+                } else {
+                    std::cout << "Could not find declination in calendar. Please enter manually: ";
+                    std::cin >> moon_dec;
+                    clearInputBuffer();
+                }
+            } else {
+                std::cout << "Error: Could not load calendar.dat. Please enter manually: ";
+                std::cin >> moon_dec;
+                clearInputBuffer();
+            }
+        } else {
+            std::cout << "Enter moon declination (degrees, typical: -28 to +28): ";
+            std::cin >> moon_dec;
+            clearInputBuffer();
+        }
+
+        std::cout << "\nEnter DX station hour angle (degrees, 0=transit): ";
         double hour_angle_dx;
         std::cin >> hour_angle_dx;
         clearInputBuffer();

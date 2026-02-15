@@ -177,6 +177,13 @@ namespace ParameterUtils {
         if (freq_MHz >= 144 && freq_MHz < 148) return "2m";
         if (freq_MHz >= 420 && freq_MHz < 450) return "70cm";
         if (freq_MHz >= 1240 && freq_MHz < 1300) return "23cm";
-        return "Unknown";
+		if (freq_MHz >= 2400 && freq_MHz < 2450) return "13cm";
+		if (freq_MHz >= 5650 && freq_MHz < 5925) return "6cm";
+		if (freq_MHz >= 10000 && freq_MHz < 10500) return "3cm";
+		if (freq_MHz >= 24000 && freq_MHz < 24250) return "1.25cm";
+		if (freq_MHz >= 47000 && freq_MHz < 47200) return "6mm";
+		if (freq_MHz >= 100000 && freq_MHz < 300000) return "mm-wave";
+		if (freq_MHz >= 300000) return "Sub-mm";
+        return "OOB";
     }
 }

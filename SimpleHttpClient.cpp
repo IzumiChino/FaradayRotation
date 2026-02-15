@@ -24,7 +24,7 @@ bool SimpleHttpClient::fetchUrl(const std::string& url, std::string& response) {
     std::wstring wPath(path.begin(), path.end());
 
     HINTERNET hSession = WinHttpOpen(
-        L"NOAA GLOTEC Client/1.0",
+        L"Mutsumi Wakaba / 01.14",
         WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
         WINHTTP_NO_PROXY_NAME,
         WINHTTP_NO_PROXY_BYPASS,

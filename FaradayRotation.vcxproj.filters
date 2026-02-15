@@ -42,6 +42,21 @@
     <ClCompile Include="WMMModel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="IonospherePhysics.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MoonCalendarReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NOAAGlotecReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleHttpClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test_glotec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FaradayRotation.h">
@@ -60,6 +75,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WMMModel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IonospherePhysics.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MoonCalendarReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NOAAGlotecReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleHttpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
